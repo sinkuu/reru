@@ -24,15 +24,17 @@ use serde::de::Deserialize;
 #[cfg(feature = "json")]
 use serde_json::error::Error as SerdeError;
 
+/// A request.
+#[derive(Clone, Debug)]
 pub struct RestRequest {
     pub method: Method,
     pub url: Url,
     pub headers: Headers,
-    pub body: Body,
-    client: Option<Client>,
+    body: Body,
 }
 
 impl RestRequest {
+    /// Create a new request.
     pub fn new<U: IntoUrl>(method: Method, url: U) -> Result<RestRequest, url::ParseError> {
         Ok(RestRequest {
             method: method,
@@ -40,15 +42,18 @@ impl RestRequest {
             headers: Headers::new(),
             // form: None,
             body: Body::None,
-            client: None,
         })
     }
 
+    /// Add a name/value pair to URL's query string
     pub fn param(mut self, name: &str, value: &str) -> Self {
         self.url.query_pairs_mut().append_pair(name, value);
         self
     }
 
+    /// Serialize a value as JSON, and set it as HTTP POST data.
+    /// By valling `body_json`, `Content-Type` of the request becomes
+    /// `application/json`.
     #[cfg(feature = "json")]
     pub fn body_json<T: Serialize>(mut self, value: &T) -> Result<Self, serde_json::error::Error> {
         self.body = Body::Buffer(try!(serde_json::to_vec(value)));
@@ -56,35 +61,35 @@ impl RestRequest {
         Ok(self)
     }
 
+    /// Add a key/value pair for HTTP POST data.
+    // By calling `body_form`, `Content-Type` of the request becomes
+    // `application/x-www-form-urlencoded`.
     pub fn body_form(mut self, name: &str, value: &str) -> Self {
-        match self.body {
+        self.body = Body::Forms(match self.body {
             Body::None | Body::Buffer(_) => {
-                self.body = Body::Forms(Serializer::new(String::new()));
                 self.headers
                     .set(ContentType(Mime(TopLevel::Application,
                                           SubLevel::WwwFormUrlEncoded,
                                           vec![])));
+
+                vec![(name.to_string(), value.to_string())]
             }
-
-            Body::Forms(_) => (),
-        }
-
-        if let Body::Forms(ref mut ser) = self.body {
-            ser.append_pair(name, value);
-        }
+            Body::Forms(mut v) => {
+                v.push((name.to_string(), value.to_string()));
+                v
+            }
+        });
 
         self
     }
 
-    pub fn client(mut self, client: Client) -> Self {
-        self.client = Some(client);
-
-        self
-    }
-
+    /// Execute this request.
     pub fn request(self) -> HyperResult<Response> {
-        let client = self.client.unwrap_or_else(Client::new);
+        self.request_with_client(Client::new())
+    }
 
+    /// Execute this request with a supplied `Client`.
+    pub fn request_with_client(self, client: Client) -> HyperResult<Response> {
         // let c = client.request(..) <-- This outlives `encoded`
 
         Ok(Response::new(try!(match self.body {
@@ -95,7 +100,13 @@ impl RestRequest {
                     .send()
             }
 
-            Body::Forms(mut ser) => {
+            Body::Forms(v) => {
+                let mut ser = Serializer::new(String::new());
+
+                for (n, v) in v {
+                    ser.append_pair(&n, &v);
+                }
+
                 let encoded = ser.finish();
                 client.request(self.method, self.url)
                     .headers(self.headers)
@@ -112,12 +123,15 @@ impl RestRequest {
     }
 }
 
-pub enum Body {
+#[derive(Clone, Debug)]
+enum Body {
     None,
     Buffer(Vec<u8>),
-    Forms(Serializer<String>),
+    Forms(Vec<(String, String)>),
 }
 
+/// A response for a request
+#[derive(Debug)]
 pub struct Response {
     hyper_response: HyperResponse,
 }
@@ -148,6 +162,7 @@ impl Response {
         &self.hyper_response.url
     }
 
+    /// Deserialize this response's body as a JSON.
     #[cfg(feature = "json")]
     pub fn parse_json<T: Deserialize>(self) -> Result<T, SerdeError> {
         Ok(try!(serde_json::from_reader(self)))
@@ -162,19 +177,20 @@ impl std::io::Read for Response {
 }
 
 macro_rules! implement_method {
-    ($name:ident, $method:expr) => {
+    ($name:ident, $method:expr, $doc:meta) => {
+        #[$doc]
         pub fn $name<U: IntoUrl>(url: U) -> Result<RestRequest, url::ParseError> {
             RestRequest::new($method, url)
         }
     }
 }
 
-implement_method!(options, Method::Options);
-implement_method!(get, Method::Get);
-implement_method!(post, Method::Post);
-implement_method!(put, Method::Put);
-implement_method!(delete, Method::Delete);
-implement_method!(head, Method::Head);
-implement_method!(trace, Method::Trace);
-implement_method!(connect, Method::Connect);
-implement_method!(patch, Method::Patch);
+implement_method!(options, Method::Options, doc = "Create a OPTIONS request.");
+implement_method!(get, Method::Get, doc = "Create a GET request.");
+implement_method!(post, Method::Post, doc = "Create a POST request.");
+implement_method!(put, Method::Put, doc = "Create a PUT request.");
+implement_method!(delete, Method::Delete, doc = "Create a DELETE request.");
+implement_method!(head, Method::Head, doc = "Create a HEAD request.");
+implement_method!(trace, Method::Trace, doc = "Create a TRACE request.");
+implement_method!(connect, Method::Connect, doc = "Create a CONNECT request.");
+implement_method!(patch, Method::Patch, doc = "Create a PATCH request.");
