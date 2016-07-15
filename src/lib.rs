@@ -83,7 +83,7 @@ impl RestRequest {
     }
 
     pub fn request(self) -> HyperResult<Response> {
-        let client = self.client.unwrap_or_else(|| Client::new());
+        let client = self.client.unwrap_or_else(Client::new);
 
         // let c = client.request(..) <-- This outlives `encoded`
 
