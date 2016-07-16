@@ -333,7 +333,7 @@
     }
 
     <span class='doccomment'>/// Serialize a value as JSON, and set it as HTTP POST data.</span>
-    <span class='doccomment'>/// By valling `body_json`, `Content-Type` of the request becomes</span>
+    <span class='doccomment'>/// By calling `body_json`, `Content-Type` of this request becomes</span>
     <span class='doccomment'>/// `application/json`.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;json&quot;</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>body_json</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Serialize</span><span class='op'>&gt;</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>value</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='self'>Self</span>, <span class='ident'>serde_json</span>::<span class='ident'>error</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {

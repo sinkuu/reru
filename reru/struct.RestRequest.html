@@ -65,7 +65,7 @@
 <div class='docblock'><p>Add a name/value pair to URL&#39;s query string</p>
 </div><h4 id='method.body_json' class='method'><code>fn <a href='#method.body_json' class='fnname'>body_json</a>&lt;T: <a class='trait' href='../serde/ser/trait.Serialize.html' title='serde::ser::Serialize'>Serialize</a>&gt;(self, value: &amp;T) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self, <a class='enum' href='../serde_json/error/enum.Error.html' title='serde_json::error::Error'>Error</a>&gt;</code></h4>
 <div class='docblock'><p>Serialize a value as JSON, and set it as HTTP POST data.
-By valling <code>body_json</code>, <code>Content-Type</code> of the request becomes
+By calling <code>body_json</code>, <code>Content-Type</code> of this request becomes
 <code>application/json</code>.</p>
 </div><h4 id='method.body_form' class='method'><code>fn <a href='#method.body_form' class='fnname'>body_form</a>(self, name: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; Self</code></h4>
 <div class='docblock'><p>Add a key/value pair for HTTP POST data.</p>
