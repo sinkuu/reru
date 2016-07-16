@@ -1,11 +1,12 @@
 [package]
 name = "reru"
 description = "A simple REST client"
-repository = "https://github.com/sinkuu/reru"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["sinkuu <sinkuupump@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
+documentation = "https://sinkuu.github.io/reru/reru/"
+repository = "https://github.com/sinkuu/reru"
 
 [features]
 default = ["json"]
