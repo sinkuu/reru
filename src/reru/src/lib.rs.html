@@ -343,8 +343,8 @@
     }
 
     <span class='doccomment'>/// Add a key/value pair for HTTP POST data.</span>
-    <span class='comment'>// By calling `body_form`, `Content-Type` of the request becomes</span>
-    <span class='comment'>// `application/x-www-form-urlencoded`.</span>
+    <span class='doccomment'>/// By calling `body_form`, `Content-Type` of the request becomes</span>
+    <span class='doccomment'>/// `application/x-www-form-urlencoded`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>body_form</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>value</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>body</span> <span class='op'>=</span> <span class='ident'>Body</span>::<span class='ident'>Forms</span>(<span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>body</span> {
             <span class='ident'>Body</span>::<span class='prelude-val'>None</span> <span class='op'>|</span> <span class='ident'>Body</span>::<span class='ident'>Buffer</span>(_) <span class='op'>=&gt;</span> {

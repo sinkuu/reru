@@ -68,7 +68,9 @@
 By calling <code>body_json</code>, <code>Content-Type</code> of this request becomes
 <code>application/json</code>.</p>
 </div><h4 id='method.body_form' class='method'><code>fn <a href='#method.body_form' class='fnname'>body_form</a>(self, name: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; Self</code></h4>
-<div class='docblock'><p>Add a key/value pair for HTTP POST data.</p>
+<div class='docblock'><p>Add a key/value pair for HTTP POST data.
+By calling <code>body_form</code>, <code>Content-Type</code> of the request becomes
+<code>application/x-www-form-urlencoded</code>.</p>
 </div><h4 id='method.request' class='method'><code>fn <a href='#method.request' class='fnname'>request</a>(self) -&gt; <a class='type' href='../hyper/error/type.Result.html' title='hyper::error::Result'>HyperResult</a>&lt;<a class='struct' href='../reru/struct.Response.html' title='reru::Response'>Response</a>&gt;</code></h4>
 <div class='docblock'><p>Execute this request.</p>
 </div><h4 id='method.request_with_client' class='method'><code>fn <a href='#method.request_with_client' class='fnname'>request_with_client</a>(self, client: <a class='struct' href='../hyper/client/struct.Client.html' title='hyper::client::Client'>Client</a>) -&gt; <a class='type' href='../hyper/error/type.Result.html' title='hyper::error::Result'>HyperResult</a>&lt;<a class='struct' href='../reru/struct.Response.html' title='reru::Response'>Response</a>&gt;</code></h4>
