@@ -72,7 +72,7 @@ impl RestRequest {
     }
 
     /// Serialize a value as JSON, and set it as HTTP POST data.
-    /// By valling `body_json`, `Content-Type` of the request becomes
+    /// By calling `body_json`, `Content-Type` of this request becomes
     /// `application/json`.
     #[cfg(feature = "json")]
     pub fn body_json<T: Serialize>(mut self, value: &T) -> Result<Self, serde_json::error::Error> {
