@@ -82,8 +82,8 @@ impl RestRequest {
     }
 
     /// Add a key/value pair for HTTP POST data.
-    // By calling `body_form`, `Content-Type` of the request becomes
-    // `application/x-www-form-urlencoded`.
+    /// By calling `body_form`, `Content-Type` of the request becomes
+    /// `application/x-www-form-urlencoded`.
     pub fn body_form(mut self, name: &str, value: &str) -> Self {
         self.body = Body::Forms(match self.body {
             Body::None | Body::Buffer(_) => {
