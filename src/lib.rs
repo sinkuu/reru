@@ -1,4 +1,4 @@
-//! A simple REST client library.
+//! A simple HTTP request client library.
 //!
 //! #Example
 //!

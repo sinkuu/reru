@@ -1,6 +1,6 @@
 # reru
 
-A simple REST client for Rust, inspired by [unirest](http://unirest.io/).
+A simple HTTP request client for Rust, inspired by [unirest](http://unirest.io/).
 
 ```rust
 let mut res = String::new();
