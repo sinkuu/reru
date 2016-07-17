@@ -1,6 +1,10 @@
 # reru
 
+[![Crates.io](https://img.shields.io/crates/v/reru.svg?maxAge=2592000)](https://crates.io/crates/reru)
+
 A simple HTTP request client for Rust, inspired by [unirest](http://unirest.io/).
+
+[Documentation](https://sinkuu.github.io/reru/reru/)
 
 ```rust
 let mut res = String::new();
