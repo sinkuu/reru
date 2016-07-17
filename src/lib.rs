@@ -54,24 +54,23 @@ pub struct RestRequest {
 }
 
 impl RestRequest {
-    /// Create a new request.
+    /// Creates a new request.
     pub fn new<U: IntoUrl>(method: Method, url: U) -> Result<RestRequest, url::ParseError> {
         Ok(RestRequest {
             method: method,
             url: try!(url.into_url()),
             headers: Headers::new(),
-            // form: None,
             body: Body::None,
         })
     }
 
-    /// Add a name/value pair to URL's query string
+    /// Adds a name/value pair to URL's query string
     pub fn param(mut self, name: &str, value: &str) -> Self {
         self.url.query_pairs_mut().append_pair(name, value);
         self
     }
 
-    /// Serialize a value as JSON, and set it as HTTP POST data.
+    /// Serializes a value as JSON, and sets it as HTTP POST data.
     /// By calling `body_json`, `Content-Type` of this request becomes
     /// `application/json`.
     #[cfg(feature = "json")]
@@ -81,8 +80,8 @@ impl RestRequest {
         Ok(self)
     }
 
-    /// Add a key/value pair for HTTP POST data.
-    /// By calling `body_form`, `Content-Type` of the request becomes
+    /// Adds a key/value pair for HTTP POST data.
+    /// By calling `body_form`, `Content-Type` of this request becomes
     /// `application/x-www-form-urlencoded`.
     pub fn body_form(mut self, name: &str, value: &str) -> Self {
         self.body = Body::Forms(match self.body {
@@ -103,12 +102,12 @@ impl RestRequest {
         self
     }
 
-    /// Execute this request.
+    /// Executes this request.
     pub fn request(self) -> HyperResult<Response> {
         self.request_with_client(Client::new())
     }
 
-    /// Execute this request with a supplied `Client`.
+    /// Executes this request with a supplied `Client`.
     pub fn request_with_client(self, client: Client) -> HyperResult<Response> {
         // let c = client.request(..) <-- This outlives `encoded`
 
@@ -150,15 +149,17 @@ enum Body {
     Forms(Vec<(String, String)>),
 }
 
-/// A response for a request
+/// A response for a request. This is a wrapper around
+/// hyper's [`Response`](../hyper/client/response/struct.Response.html) struct for JSON deserialization support.
 #[derive(Debug)]
 pub struct Response {
     hyper_response: HyperResponse,
 }
 
 impl Response {
+    /// Wraps hyper's [`Response`](../hyper/client/response/struct.Response.html) struct.
     #[inline]
-    fn new(hyper_response: HyperResponse) -> Response {
+    pub fn new(hyper_response: HyperResponse) -> Response {
         Response { hyper_response: hyper_response }
     }
 
@@ -182,7 +183,7 @@ impl Response {
         &self.hyper_response.url
     }
 
-    /// Deserialize this response's body as a JSON.
+    /// Deserializes this response's body as a JSON.
     #[cfg(feature = "json")]
     pub fn parse_json<T: Deserialize>(self) -> Result<T, SerdeError> {
         Ok(try!(serde_json::from_reader(self)))
@@ -197,20 +198,20 @@ impl std::io::Read for Response {
 }
 
 macro_rules! implement_method {
-    ($name:ident, $method:expr, $doc:meta) => {
-        #[$doc]
+    ($name:ident, $method:expr, $doc:expr) => {
+        #[doc = $doc]
         pub fn $name<U: IntoUrl>(url: U) -> Result<RestRequest, url::ParseError> {
             RestRequest::new($method, url)
         }
     }
 }
 
-implement_method!(options, Method::Options, doc = "Create a OPTIONS request.");
-implement_method!(get, Method::Get, doc = "Create a GET request.");
-implement_method!(post, Method::Post, doc = "Create a POST request.");
-implement_method!(put, Method::Put, doc = "Create a PUT request.");
-implement_method!(delete, Method::Delete, doc = "Create a DELETE request.");
-implement_method!(head, Method::Head, doc = "Create a HEAD request.");
-implement_method!(trace, Method::Trace, doc = "Create a TRACE request.");
-implement_method!(connect, Method::Connect, doc = "Create a CONNECT request.");
-implement_method!(patch, Method::Patch, doc = "Create a PATCH request.");
+implement_method!(options, Method::Options, "Create a OPTIONS request.");
+implement_method!(get, Method::Get, "Create a GET request.");
+implement_method!(post, Method::Post, "Create a POST request.");
+implement_method!(put, Method::Put, "Create a PUT request.");
+implement_method!(delete, Method::Delete, "Create a DELETE request.");
+implement_method!(head, Method::Head, "Create a HEAD request.");
+implement_method!(trace, Method::Trace, "Create a TRACE request.");
+implement_method!(connect, Method::Connect, "Create a CONNECT request.");
+implement_method!(patch, Method::Patch, "Create a PATCH request.");
