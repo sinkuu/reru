@@ -58,23 +58,23 @@
 <table><tr class='stab '>
                              <td id='structfield.method'><code>method</code></td><td></td></tr><tr class='stab '>
                              <td id='structfield.url'><code>url</code></td><td></td></tr><tr class='stab '>
-                             <td id='structfield.headers'><code>headers</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../reru/struct.RestRequest.html' title='reru::RestRequest'>RestRequest</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-42' class='srclink' href='../src/reru/src/lib.rs.html#56-144' title='goto source code'>[src]</a></span></h3>
+                             <td id='structfield.headers'><code>headers</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../reru/struct.RestRequest.html' title='reru::RestRequest'>RestRequest</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-42' class='srclink' href='../src/reru/src/lib.rs.html#56-143' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>&lt;U: <a class='trait' href='../hyper/client/trait.IntoUrl.html' title='hyper::client::IntoUrl'>IntoUrl</a>&gt;(method: <a class='enum' href='../hyper/method/enum.Method.html' title='hyper::method::Method'>Method</a>, url: U) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../reru/struct.RestRequest.html' title='reru::RestRequest'>RestRequest</a>, <a class='enum' href='../url/parser/enum.ParseError.html' title='url::parser::ParseError'>ParseError</a>&gt;</code></h4>
-<div class='docblock'><p>Create a new request.</p>
+<div class='docblock'><p>Creates a new request.</p>
 </div><h4 id='method.param' class='method'><code>fn <a href='#method.param' class='fnname'>param</a>(self, name: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; Self</code></h4>
-<div class='docblock'><p>Add a name/value pair to URL&#39;s query string</p>
+<div class='docblock'><p>Adds a name/value pair to URL&#39;s query string</p>
 </div><h4 id='method.body_json' class='method'><code>fn <a href='#method.body_json' class='fnname'>body_json</a>&lt;T: <a class='trait' href='../serde/ser/trait.Serialize.html' title='serde::ser::Serialize'>Serialize</a>&gt;(self, value: &amp;T) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self, <a class='enum' href='../serde_json/error/enum.Error.html' title='serde_json::error::Error'>Error</a>&gt;</code></h4>
-<div class='docblock'><p>Serialize a value as JSON, and set it as HTTP POST data.
+<div class='docblock'><p>Serializes a value as JSON, and sets it as HTTP POST data.
 By calling <code>body_json</code>, <code>Content-Type</code> of this request becomes
 <code>application/json</code>.</p>
 </div><h4 id='method.body_form' class='method'><code>fn <a href='#method.body_form' class='fnname'>body_form</a>(self, name: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; Self</code></h4>
-<div class='docblock'><p>Add a key/value pair for HTTP POST data.
-By calling <code>body_form</code>, <code>Content-Type</code> of the request becomes
+<div class='docblock'><p>Adds a key/value pair for HTTP POST data.
+By calling <code>body_form</code>, <code>Content-Type</code> of this request becomes
 <code>application/x-www-form-urlencoded</code>.</p>
 </div><h4 id='method.request' class='method'><code>fn <a href='#method.request' class='fnname'>request</a>(self) -&gt; <a class='type' href='../hyper/error/type.Result.html' title='hyper::error::Result'>HyperResult</a>&lt;<a class='struct' href='../reru/struct.Response.html' title='reru::Response'>Response</a>&gt;</code></h4>
-<div class='docblock'><p>Execute this request.</p>
+<div class='docblock'><p>Executes this request.</p>
 </div><h4 id='method.request_with_client' class='method'><code>fn <a href='#method.request_with_client' class='fnname'>request_with_client</a>(self, client: <a class='struct' href='../hyper/client/struct.Client.html' title='hyper::client::Client'>Client</a>) -&gt; <a class='type' href='../hyper/error/type.Result.html' title='hyper::error::Result'>HyperResult</a>&lt;<a class='struct' href='../reru/struct.Response.html' title='reru::Response'>Response</a>&gt;</code></h4>
-<div class='docblock'><p>Execute this request with a supplied <code>Client</code>.</p>
+<div class='docblock'><p>Executes this request with a supplied <code>Client</code>.</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../reru/struct.RestRequest.html' title='reru::RestRequest'>RestRequest</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-26' class='srclink' href='../src/reru/src/lib.rs.html#48' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>

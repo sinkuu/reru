@@ -258,6 +258,7 @@
 <span id="214">214</span>
 <span id="215">215</span>
 <span id="216">216</span>
+<span id="217">217</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! A simple REST client library.</span>
 <span class='doccomment'>//!</span>
@@ -315,24 +316,23 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>RestRequest</span> {
-    <span class='doccomment'>/// Create a new request.</span>
+    <span class='doccomment'>/// Creates a new request.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='ident'>method</span>: <span class='ident'>Method</span>, <span class='ident'>url</span>: <span class='ident'>U</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RestRequest</span>, <span class='ident'>url</span>::<span class='ident'>ParseError</span><span class='op'>&gt;</span> {
         <span class='prelude-val'>Ok</span>(<span class='ident'>RestRequest</span> {
             <span class='ident'>method</span>: <span class='ident'>method</span>,
             <span class='ident'>url</span>: <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>url</span>.<span class='ident'>into_url</span>()),
             <span class='ident'>headers</span>: <span class='ident'>Headers</span>::<span class='ident'>new</span>(),
-            <span class='comment'>// form: None,</span>
             <span class='ident'>body</span>: <span class='ident'>Body</span>::<span class='prelude-val'>None</span>,
         })
     }
 
-    <span class='doccomment'>/// Add a name/value pair to URL&#39;s query string</span>
+    <span class='doccomment'>/// Adds a name/value pair to URL&#39;s query string</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>param</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>value</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>url</span>.<span class='ident'>query_pairs_mut</span>().<span class='ident'>append_pair</span>(<span class='ident'>name</span>, <span class='ident'>value</span>);
         <span class='self'>self</span>
     }
 
-    <span class='doccomment'>/// Serialize a value as JSON, and set it as HTTP POST data.</span>
+    <span class='doccomment'>/// Serializes a value as JSON, and sets it as HTTP POST data.</span>
     <span class='doccomment'>/// By calling `body_json`, `Content-Type` of this request becomes</span>
     <span class='doccomment'>/// `application/json`.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;json&quot;</span>)]</span>
@@ -342,8 +342,8 @@
         <span class='prelude-val'>Ok</span>(<span class='self'>self</span>)
     }
 
-    <span class='doccomment'>/// Add a key/value pair for HTTP POST data.</span>
-    <span class='doccomment'>/// By calling `body_form`, `Content-Type` of the request becomes</span>
+    <span class='doccomment'>/// Adds a key/value pair for HTTP POST data.</span>
+    <span class='doccomment'>/// By calling `body_form`, `Content-Type` of this request becomes</span>
     <span class='doccomment'>/// `application/x-www-form-urlencoded`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>body_form</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>value</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='self'>self</span>.<span class='ident'>body</span> <span class='op'>=</span> <span class='ident'>Body</span>::<span class='ident'>Forms</span>(<span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>body</span> {
@@ -364,12 +364,12 @@
         <span class='self'>self</span>
     }
 
-    <span class='doccomment'>/// Execute this request.</span>
+    <span class='doccomment'>/// Executes this request.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>request</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>HyperResult</span><span class='op'>&lt;</span><span class='ident'>Response</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>request_with_client</span>(<span class='ident'>Client</span>::<span class='ident'>new</span>())
     }
 
-    <span class='doccomment'>/// Execute this request with a supplied `Client`.</span>
+    <span class='doccomment'>/// Executes this request with a supplied `Client`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>request_with_client</span>(<span class='self'>self</span>, <span class='ident'>client</span>: <span class='ident'>Client</span>) <span class='op'>-&gt;</span> <span class='ident'>HyperResult</span><span class='op'>&lt;</span><span class='ident'>Response</span><span class='op'>&gt;</span> {
         <span class='comment'>// let c = client.request(..) &lt;-- This outlives `encoded`</span>
 
@@ -411,15 +411,17 @@
     <span class='ident'>Forms</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>String</span>, <span class='ident'>String</span>)<span class='op'>&gt;</span>),
 }
 
-<span class='doccomment'>/// A response for a request</span>
+<span class='doccomment'>/// A response for a request. This is a wrapper around</span>
+<span class='doccomment'>/// hyper&#39;s [`Response`](../hyper/client/response/struct.Response.html) struct for JSON deserialization support.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Response</span> {
     <span class='ident'>hyper_response</span>: <span class='ident'>HyperResponse</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>Response</span> {
+    <span class='doccomment'>/// Wraps hyper&#39;s [`Response`](../hyper/client/response/struct.Response.html) struct.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>hyper_response</span>: <span class='ident'>HyperResponse</span>) <span class='op'>-&gt;</span> <span class='ident'>Response</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>hyper_response</span>: <span class='ident'>HyperResponse</span>) <span class='op'>-&gt;</span> <span class='ident'>Response</span> {
         <span class='ident'>Response</span> { <span class='ident'>hyper_response</span>: <span class='ident'>hyper_response</span> }
     }
 
@@ -443,7 +445,7 @@
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>hyper_response</span>.<span class='ident'>url</span>
     }
 
-    <span class='doccomment'>/// Deserialize this response&#39;s body as a JSON.</span>
+    <span class='doccomment'>/// Deserializes this response&#39;s body as a JSON.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;json&quot;</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>parse_json</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Deserialize</span><span class='op'>&gt;</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>SerdeError</span><span class='op'>&gt;</span> {
         <span class='prelude-val'>Ok</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serde_json</span>::<span class='ident'>from_reader</span>(<span class='self'>self</span>)))
@@ -458,23 +460,23 @@
 }
 
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>implement_method</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>:<span class='ident'>expr</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>:<span class='ident'>meta</span>) <span class='op'>=&gt;</span> {
-        <span class='attribute'>#[<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>]</span>
+    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>:<span class='ident'>expr</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>:<span class='ident'>expr</span>) <span class='op'>=&gt;</span> {
+        <span class='attribute'>#[<span class='ident'>doc</span> <span class='op'>=</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>]</span>
         <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='ident'>url</span>: <span class='ident'>U</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RestRequest</span>, <span class='ident'>url</span>::<span class='ident'>ParseError</span><span class='op'>&gt;</span> {
             <span class='ident'>RestRequest</span>::<span class='ident'>new</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>, <span class='ident'>url</span>)
         }
     }
 }
 
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>options</span>, <span class='ident'>Method</span>::<span class='ident'>Options</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a OPTIONS request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>get</span>, <span class='ident'>Method</span>::<span class='ident'>Get</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a GET request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>post</span>, <span class='ident'>Method</span>::<span class='ident'>Post</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a POST request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>put</span>, <span class='ident'>Method</span>::<span class='ident'>Put</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a PUT request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>delete</span>, <span class='ident'>Method</span>::<span class='ident'>Delete</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a DELETE request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>head</span>, <span class='ident'>Method</span>::<span class='ident'>Head</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a HEAD request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>trace</span>, <span class='ident'>Method</span>::<span class='ident'>Trace</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a TRACE request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>connect</span>, <span class='ident'>Method</span>::<span class='ident'>Connect</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a CONNECT request.&quot;</span>);
-<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>patch</span>, <span class='ident'>Method</span>::<span class='ident'>Patch</span>, <span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;Create a PATCH request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>options</span>, <span class='ident'>Method</span>::<span class='ident'>Options</span>, <span class='string'>&quot;Create a OPTIONS request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>get</span>, <span class='ident'>Method</span>::<span class='ident'>Get</span>, <span class='string'>&quot;Create a GET request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>post</span>, <span class='ident'>Method</span>::<span class='ident'>Post</span>, <span class='string'>&quot;Create a POST request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>put</span>, <span class='ident'>Method</span>::<span class='ident'>Put</span>, <span class='string'>&quot;Create a PUT request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>delete</span>, <span class='ident'>Method</span>::<span class='ident'>Delete</span>, <span class='string'>&quot;Create a DELETE request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>head</span>, <span class='ident'>Method</span>::<span class='ident'>Head</span>, <span class='string'>&quot;Create a HEAD request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>trace</span>, <span class='ident'>Method</span>::<span class='ident'>Trace</span>, <span class='string'>&quot;Create a TRACE request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>connect</span>, <span class='ident'>Method</span>::<span class='ident'>Connect</span>, <span class='string'>&quot;Create a CONNECT request.&quot;</span>);
+<span class='macro'>implement_method</span><span class='macro'>!</span>(<span class='ident'>patch</span>, <span class='ident'>Method</span>::<span class='ident'>Patch</span>, <span class='string'>&quot;Create a PATCH request.&quot;</span>);
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
