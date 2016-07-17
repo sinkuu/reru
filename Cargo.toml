@@ -13,7 +13,7 @@ default = ["json"]
 json = ["serde", "serde_json"]
 
 [dependencies]
-hyper = "^0.9"
-url = "^1.1"
-serde = { version = "^0.7", optional = true }
-serde_json = { version = "^0.7", optional = true }
+hyper = "0.9.10"
+url = "1.1.1"
+serde = { version = "0.7.14", optional = true }
+serde_json = { version = "0.7.4", optional = true }
