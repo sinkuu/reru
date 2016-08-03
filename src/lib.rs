@@ -46,17 +46,17 @@ use serde_json::error::Error as SerdeError;
 
 /// A request.
 #[derive(Clone, Debug)]
-pub struct RestRequest {
+pub struct Request {
     pub method: Method,
     pub url: Url,
     pub headers: Headers,
     body: Body,
 }
 
-impl RestRequest {
+impl Request {
     /// Creates a new request.
-    pub fn new<U: IntoUrl>(method: Method, url: U) -> Result<RestRequest, url::ParseError> {
-        Ok(RestRequest {
+    pub fn new<U: IntoUrl>(method: Method, url: U) -> Result<Request, url::ParseError> {
+        Ok(Request {
             method: method,
             url: try!(url.into_url()),
             headers: Headers::new(),
@@ -200,8 +200,8 @@ impl std::io::Read for Response {
 macro_rules! implement_method {
     ($name:ident, $method:expr, $doc:expr) => {
         #[doc = $doc]
-        pub fn $name<U: IntoUrl>(url: U) -> Result<RestRequest, url::ParseError> {
-            RestRequest::new($method, url)
+        pub fn $name<U: IntoUrl>(url: U) -> Result<Request, url::ParseError> {
+            Request::new($method, url)
         }
     }
 }
