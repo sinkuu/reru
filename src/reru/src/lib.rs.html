@@ -259,12 +259,25 @@
 <span id="215">215</span>
 <span id="216">216</span>
 <span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! A simple HTTP request client library.</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! #Example</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! ```rust</span>
+<span class='doccomment'>//! # use std::io::Read;</span>
 <span class='doccomment'>//! let mut res = String::new();</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! reru::post(&quot;https://httpbin.org/post&quot;)</span>
@@ -290,7 +303,7 @@
 
 <span class='kw'>use</span> <span class='ident'>url</span>::<span class='ident'>Url</span>;
 <span class='kw'>use</span> <span class='ident'>url</span>::<span class='ident'>form_urlencoded</span>::<span class='ident'>Serializer</span>;
-<span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>header</span>::{<span class='ident'>Headers</span>, <span class='ident'>ContentType</span>};
+<span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>header</span>::{<span class='ident'>Cookie</span>, <span class='ident'>CookiePair</span>, <span class='ident'>Headers</span>, <span class='ident'>ContentType</span>};
 <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>mime</span>::{<span class='ident'>Mime</span>, <span class='ident'>TopLevel</span>, <span class='ident'>SubLevel</span>};
 <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>status</span>::<span class='ident'>StatusCode</span>;
 <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>version</span>::<span class='ident'>HttpVersion</span>;
@@ -298,6 +311,8 @@
 <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>client</span>::<span class='ident'>Response</span> <span class='kw'>as</span> <span class='ident'>HyperResponse</span>;
 <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>method</span>::<span class='ident'>Method</span>;
 <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>error</span>::<span class='prelude-ty'>Result</span> <span class='kw'>as</span> <span class='ident'>HyperResult</span>;
+
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>header</span>::<span class='ident'>CookieJar</span>;
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;json&quot;</span>)]</span>
 <span class='kw'>use</span> <span class='ident'>serde</span>::<span class='ident'>ser</span>::<span class='ident'>Serialize</span>;
@@ -308,17 +323,17 @@
 
 <span class='doccomment'>/// A request.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RestRequest</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Request</span> {
     <span class='kw'>pub</span> <span class='ident'>method</span>: <span class='ident'>Method</span>,
     <span class='kw'>pub</span> <span class='ident'>url</span>: <span class='ident'>Url</span>,
     <span class='kw'>pub</span> <span class='ident'>headers</span>: <span class='ident'>Headers</span>,
     <span class='ident'>body</span>: <span class='ident'>Body</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>RestRequest</span> {
+<span class='kw'>impl</span> <span class='ident'>Request</span> {
     <span class='doccomment'>/// Creates a new request.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='ident'>method</span>: <span class='ident'>Method</span>, <span class='ident'>url</span>: <span class='ident'>U</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RestRequest</span>, <span class='ident'>url</span>::<span class='ident'>ParseError</span><span class='op'>&gt;</span> {
-        <span class='prelude-val'>Ok</span>(<span class='ident'>RestRequest</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='ident'>method</span>: <span class='ident'>Method</span>, <span class='ident'>url</span>: <span class='ident'>U</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Request</span>, <span class='ident'>url</span>::<span class='ident'>ParseError</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='ident'>Request</span> {
             <span class='ident'>method</span>: <span class='ident'>method</span>,
             <span class='ident'>url</span>: <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>url</span>.<span class='ident'>into_url</span>()),
             <span class='ident'>headers</span>: <span class='ident'>Headers</span>::<span class='ident'>new</span>(),
@@ -362,6 +377,15 @@
         });
 
         <span class='self'>self</span>
+    }
+
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>cookie</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>cookie</span>: <span class='ident'>CookiePair</span>) {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>headers</span>.<span class='ident'>has</span>::<span class='op'>&lt;</span><span class='ident'>Cookie</span><span class='op'>&gt;</span>() {
+            <span class='kw'>let</span> <span class='ident'>cs</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>headers</span>.<span class='ident'>get_mut</span>::<span class='op'>&lt;</span><span class='ident'>Cookie</span><span class='op'>&gt;</span>().<span class='ident'>unwrap</span>();
+            <span class='ident'>cs</span>.<span class='ident'>push</span>(<span class='ident'>cookie</span>);
+        } <span class='kw'>else</span> {
+            <span class='self'>self</span>.<span class='ident'>headers</span>.<span class='ident'>set</span>(<span class='ident'>Cookie</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>cookie</span>]));
+        }
     }
 
     <span class='doccomment'>/// Executes this request.</span>
@@ -462,8 +486,8 @@
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>implement_method</span> {
     (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>:<span class='ident'>expr</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>:<span class='ident'>expr</span>) <span class='op'>=&gt;</span> {
         <span class='attribute'>#[<span class='ident'>doc</span> <span class='op'>=</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>doc</span>]</span>
-        <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='ident'>url</span>: <span class='ident'>U</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RestRequest</span>, <span class='ident'>url</span>::<span class='ident'>ParseError</span><span class='op'>&gt;</span> {
-            <span class='ident'>RestRequest</span>::<span class='ident'>new</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>, <span class='ident'>url</span>)
+        <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='ident'>url</span>: <span class='ident'>U</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Request</span>, <span class='ident'>url</span>::<span class='ident'>ParseError</span><span class='op'>&gt;</span> {
+            <span class='ident'>Request</span>::<span class='ident'>new</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>, <span class='ident'>url</span>)
         }
     }
 }
