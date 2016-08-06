@@ -3,6 +3,7 @@
 //! #Example
 //!
 //! ```rust
+//! # use std::io::Read;
 //! let mut res = String::new();
 //!
 //! reru::post("https://httpbin.org/post")
